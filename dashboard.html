@@ -110,9 +110,9 @@
     .menu {
       display: flex;
       justify-content: space-around;
+      flex-wrap: wrap; /* supaya bisa turun kalau sempit */
       margin: 20px;
-      z-index: 1;
-      position: relative;
+      gap: 10px; /* jarak antar button */
     }
 
     .menu button {
@@ -124,10 +124,25 @@
       cursor: pointer;
       font-size: 16px;
       transition: background 0.3s;
+      flex: 1 1 auto; /* supaya button fleksibel */
+      min-width: 100px; /* minimal lebar */
     }
 
     .menu button:hover {
       background: #005b99;
+    }
+
+    /* Responsif untuk layar kecil (misalnya HP) */
+    @media (max-width: 600px) {
+      .menu {
+        flex-direction: column; /* ditumpuk */
+        align-items: center;
+      }
+
+      .menu button {
+        width: 80%; /* button lebih besar di HP */
+        max-width: 300px;
+      }
     }
 
     .pump-container {
@@ -192,7 +207,6 @@
   <div class="bubble" style="left: 75%; animation-delay: 2.5s;"></div>
   <div class="bubble" style="left: 85%; animation-delay: 4.5s; width: 18px; height: 18px;"></div>
   <div class="bubble" style="left: 95%; animation-delay: 1.2s;"></div>
-  <!-- repeat for richer effect -->
 </div>
 
 <div class="navbar">🌤️ Monitoring Seulanga Breeze</div>
@@ -220,7 +234,6 @@
   <button onclick="window.location.href='riwayat.html'">Riwayat</button>
 </div>
 
-<!-- JavaScript MQTT dan geolokasi tetap seperti sebelumnya -->
 <script>
   const DEFAULT_LOCATION = "Jeulingke, Kecamatan Syiah Kuala, Banda Aceh";
   const client = mqtt.connect('wss://test.mosquitto.org:8081');
