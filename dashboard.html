@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <title>Seulanga Breeze</title>
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    /* Global Styles */
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #e3edf7;
@@ -14,9 +16,23 @@
       flex-direction: column;
       min-height: 100vh;
       overflow-x: hidden;
-      position: relative;
     }
 
+    /* Navbar */
+    .navbar {
+      background: #0077c2;
+      color: #fff;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      padding: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    /* Bubble Background */
     .bubbles {
       position: fixed;
       top: 0;
@@ -32,7 +48,7 @@
       bottom: -100px;
       width: 20px;
       height: 20px;
-      background-color: rgba(0, 183, 255, 0.2);
+      background-color: rgba(0, 183, 255, 0.15);
       border-radius: 50%;
       animation: floatBubble 10s infinite ease-in;
     }
@@ -48,52 +64,41 @@
       }
     }
 
-    .navbar {
-      background: #0077c2;
-      padding: 15px;
-      color: #fff;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    /* Card Style */
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 20px auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      max-width: 420px;
       z-index: 1;
       position: relative;
     }
 
-    .card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin: 15px auto;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-      max-width: 380px;
-    }
-
     .card h3 {
-      margin-top: 8px;
-      margin-bottom: 12px;
+      margin: 8px 0 12px;
       color: #0077c2;
-      font-size: 18px;
+      font-size: 20px;
       text-align: center;
     }
 
     .data {
       font-size: 18px;
-      margin: 6px 0;
+      margin: 8px 0;
       color: #333;
       text-align: center;
     }
 
+    /* Notification Banner */
     .notif {
       border-radius: 10px;
       padding: 12px;
       text-align: center;
-      margin: 0 20px 20px 20px;
-      display: none;
-      font-size: 18px;
+      margin: 0 20px 20px;
+      font-size: 17px;
       font-weight: 500;
-      z-index: 1;
-      position: relative;
+      display: none;
     }
 
     .notif.aktif {
@@ -106,10 +111,11 @@
       color: #000;
     }
 
+    /* Pump Control */
     .pump-container {
       display: flex;
       justify-content: center;
-      margin: 10px 0;
+      margin: 16px 0;
     }
 
     .pump-button {
@@ -118,8 +124,8 @@
       border-radius: 50%;
       border: none;
       cursor: pointer;
+      transition: 0.3s;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      transition: all 0.3s ease;
     }
 
     .pump-on {
@@ -139,27 +145,27 @@
       color: #333;
     }
 
+    /* Location */
     .location-data {
       text-align: center;
       font-size: 14px;
-      margin-top: 8px;
+      margin-top: 10px;
       color: #333;
     }
 
     .location-icon {
-      font-size: 20px;
       margin-right: 6px;
-      vertical-align: middle;
     }
 
+    /* Menu Bar */
     .menu {
       display: flex;
       justify-content: space-around;
       flex-wrap: wrap;
-      margin: 10px;
+      margin: 12px;
       padding: 8px;
       gap: 8px;
-      background-color: #fff;
+      background: #fff;
       box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
       position: sticky;
       bottom: 0;
@@ -172,31 +178,31 @@
       border: none;
       background: #0099ff;
       color: #fff;
-      cursor: pointer;
       font-size: 14px;
       flex: 1 1 auto;
       min-width: 90px;
+      cursor: pointer;
+      transition: background 0.3s;
     }
 
     .menu button:hover {
       background: #007acc;
     }
 
+    /* Responsive */
     @media (max-width: 600px) {
       .card {
-        padding: 10px 12px;
-        margin: 12px auto;
+        padding: 12px;
+        margin: 14px auto;
         max-width: 95%;
       }
 
       .card h3 {
-        font-size: 16px;
-        margin-bottom: 10px;
+        font-size: 18px;
       }
 
       .data {
         font-size: 16px;
-        margin: 5px 0;
       }
 
       .pump-button {
@@ -206,12 +212,10 @@
 
       .pump-label {
         font-size: 13px;
-        margin-top: 5px;
       }
 
       .location-data {
         font-size: 13px;
-        margin-top: 6px;
       }
 
       .menu button {
@@ -221,20 +225,14 @@
     }
   </style>
 </head>
+
 <body>
 
 <div class="bubbles">
-  <!-- bubble animasi -->
-  <div class="bubble" style="left: 5%; animation-delay: 0s;"></div>
-  <div class="bubble" style="left: 15%; animation-delay: 2s; width: 15px; height: 15px;"></div>
-  <div class="bubble" style="left: 25%; animation-delay: 4s;"></div>
-  <div class="bubble" style="left: 35%; animation-delay: 1s; width: 25px; height: 25px;"></div>
-  <div class="bubble" style="left: 45%; animation-delay: 3s;"></div>
-  <div class="bubble" style="left: 55%; animation-delay: 0.5s;"></div>
-  <div class="bubble" style="left: 65%; animation-delay: 6s; width: 10px; height: 10px;"></div>
-  <div class="bubble" style="left: 75%; animation-delay: 2.5s;"></div>
-  <div class="bubble" style="left: 85%; animation-delay: 4.5s; width: 18px; height: 18px;"></div>
-  <div class="bubble" style="left: 95%; animation-delay: 1.2s;"></div>
+  <div class="bubble" style="left:5%;animation-delay:0s;"></div>
+  <div class="bubble" style="left:15%;animation-delay:2s;width:15px;height:15px;"></div>
+  <div class="bubble" style="left:25%;animation-delay:4s;"></div>
+  <div class="bubble" style="left:35%;animation-delay:1s;width:25px;height:25px;"></div>
 </div>
 
 <div class="navbar">🌤️ Monitoring Seulanga Breeze</div>
@@ -251,8 +249,7 @@
   <div class="pump-label">Status Pompa</div>
 
   <div class="location-data">
-    <span class="location-icon">📍</span>
-    <span id="location-text">Mengambil lokasi...</span>
+    <span class="location-icon">📍</span><span id="location-text">Mengambil lokasi...</span>
   </div>
 </div>
 
@@ -263,7 +260,7 @@
 </div>
 
 <script>
-  const DEFAULT_LOCATION = "Jeulingke, Kecamatan Syiah Kuala, Banda Aceh";
+  const DEFAULT_LOCATION = "Jeulingke, Syiah Kuala, Banda Aceh";
   const client = mqtt.connect('wss://test.mosquitto.org:8081');
 
   client.on('connect', function () {
@@ -293,79 +290,53 @@
     }
 
     if (topic === 'tekkom/iot/pompa') {
-      const pumpStatus = message.toString();
-      const pumpElement = document.getElementById('pompa');
-      if (pumpStatus === 'HIDUP') {
-        pumpElement.className = 'pump-button pump-on';
-      } else {
-        pumpElement.className = 'pump-button pump-off';
-      }
+      const status = message.toString();
+      const pumpButton = document.getElementById('pompa');
+      pumpButton.className = 'pump-button ' + (status === 'HIDUP' ? 'pump-on' : 'pump-off');
     }
 
     if (topic === 'tekkom/iot/location') {
       try {
-        const locationData = JSON.parse(message.toString());
-        updateLocationDisplay(locationData);
+        const loc = JSON.parse(message.toString());
+        updateLocationDisplay(loc);
       } catch (e) {
-        console.error("Gagal parsing data lokasi:", e);
+        console.error("Lokasi tidak bisa dibaca:", e);
       }
     }
   });
 
   function getLocation() {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition, showError, {
-        enableHighAccuracy: true,
-        maximumAge: 60000,
-        timeout: 10000
+      navigator.geolocation.getCurrentPosition(showPosition, () => {
+        document.getElementById('location-text').textContent = DEFAULT_LOCATION;
       });
     } else {
       document.getElementById('location-text').textContent = DEFAULT_LOCATION;
     }
   }
 
-  function showPosition(position) {
-    const lat = position.coords.latitude;
-    const lng = position.coords.longitude;
-    const locationData = {
-      latitude: lat,
-      longitude: lng,
-      timestamp: new Date().toISOString()
-    };
+  function showPosition(pos) {
+    const lat = pos.coords.latitude;
+    const lon = pos.coords.longitude;
+    const locationData = {latitude: lat, longitude: lon};
     client.publish('tekkom/iot/location', JSON.stringify(locationData));
     updateLocationDisplay(locationData);
   }
 
-  function updateLocationDisplay(locationData) {
-    const lat = locationData.latitude;
-    const lng = locationData.longitude;
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
-      .then(response => response.json())
+  function updateLocationDisplay(loc) {
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${loc.latitude}&lon=${loc.longitude}`)
+      .then(res => res.json())
       .then(data => {
-        const locationName = data.display_name || `Koordinat: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-        document.getElementById('location-text').textContent = locationName;
-      })
-      .catch(() => {
-        document.getElementById('location-text').textContent = `Koordinat: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        document.getElementById('location-text').textContent = data.display_name || `Lat: ${loc.latitude}, Lon: ${loc.longitude}`;
+      }).catch(() => {
+        document.getElementById('location-text').textContent = `Lat: ${loc.latitude}, Lon: ${loc.longitude}`;
       });
   }
 
-  function showError(error) {
-    const fallback = DEFAULT_LOCATION;
-    document.getElementById('location-text').textContent = fallback;
-  }
-
-  document.getElementById('pompa').addEventListener('click', function () {
-    const currentStatus = this.classList.contains('pump-on') ? 'MATI' : 'HIDUP';
-    client.publish('tekkom/iot/pompa', currentStatus);
+  document.getElementById('pompa').addEventListener('click', () => {
+    const isOn = document.getElementById('pompa').classList.contains('pump-on');
+    client.publish('tekkom/iot/pompa', isOn ? 'MATI' : 'HIDUP');
   });
-
-  setInterval(() => {
-    if (!client.connected) {
-      console.log("MQTT terputus, mencoba reconnect...");
-      client.reconnect();
-    }
-  }, 30000);
 </script>
 
 </body>
