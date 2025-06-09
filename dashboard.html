@@ -63,24 +63,27 @@
     .card {
       background: #ffffff;
       border-radius: 12px;
-      padding: 25px;
-      margin: 20px;
+      padding: 15px;
+      margin: 15px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.12);
       flex-grow: 1;
       z-index: 1;
       position: relative;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .card h3 {
       margin-top: 0;
       color: #0077c2;
-      font-size: 20px;
+      font-size: 18px;
       text-align: center;
     }
 
     .data {
-      font-size: 26px;
-      margin: 14px 0;
+      font-size: 20px;
+      margin: 10px 0;
       color: #333;
       text-align: center;
     }
@@ -110,7 +113,7 @@
     .pump-container {
       display: flex;
       justify-content: center;
-      margin: 30px 0;
+      margin: 20px 0;
     }
 
     .pump-button {
@@ -135,83 +138,93 @@
 
     .pump-label {
       text-align: center;
-      font-size: 18px;
-      margin-top: 10px;
+      font-size: 16px;
+      margin-top: 8px;
       color: #333;
     }
 
     .location-data {
       text-align: center;
-      font-size: 18px;
-      margin: 20px 0 0 0;
+      font-size: 16px;
+      margin: 16px 0 0 0;
       color: #333;
     }
 
     .location-icon {
-      font-size: 24px;
-      margin-right: 8px;
+      font-size: 20px;
+      margin-right: 6px;
       vertical-align: middle;
     }
 
-    /* MENU BUTTON stylish di bawah */
     .menu {
       display: flex;
       justify-content: space-around;
       flex-wrap: wrap;
-      padding: 10px 10px;
-      background: #ffffffcc; /* semi transparan */
-      backdrop-filter: blur(6px); /* efek blur */
-      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-      border-top: 1px solid #ddd;
-      border-radius: 12px 12px 0 0;
-      gap: 10px;
-      margin-top: auto; /* dorong ke bawah */
+      margin: 10px;
+      padding: 10px;
+      gap: 8px;
+      background-color: #fff;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+      position: sticky;
+      bottom: 0;
+      z-index: 2;
     }
 
     .menu button {
-      padding: 14px 20px;
-      border-radius: 50px; /* pill */
+      padding: 10px 18px;
+      border-radius: 20px;
       border: none;
-      background: linear-gradient(135deg, #0077c2, #00aaff);
+      background: #0099ff;
       color: #fff;
       cursor: pointer;
       font-size: 15px;
-      font-weight: bold;
-      transition: transform 0.2s, box-shadow 0.3s;
-      box-shadow: 0 4px 10px rgba(0, 119, 194, 0.3);
-      flex: 0 1 auto;
-      min-width: 100px;
+      transition: background 0.3s;
+      flex: 1 1 auto;
+      min-width: 90px;
     }
 
     .menu button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 14px rgba(0, 119, 194, 0.4);
+      background: #007acc;
     }
 
     @media (max-width: 600px) {
-      .menu {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        padding: 8px 5px;
-        gap: 8px;
+      .card {
+        padding: 12px;
+        margin: 12px;
+      }
+
+      .card h3 {
+        font-size: 16px;
+      }
+
+      .data {
+        font-size: 18px;
+      }
+
+      .location-data {
+        font-size: 14px;
+      }
+
+      .pump-button {
+        width: 60px;
+        height: 60px;
+      }
+
+      .pump-label {
+        font-size: 14px;
       }
 
       .menu button {
-        padding: 10px 16px;
         font-size: 14px;
-        min-width: 80px;
-        box-shadow: 0 2px 6px rgba(0, 119, 194, 0.2);
+        padding: 8px 14px;
       }
     }
   </style>
 </head>
-
 <body>
 
 <!-- 🫧 Bubble Background -->
 <div class="bubbles">
-  <!-- 10 bubble instances -->
   <div class="bubble" style="left: 5%; animation-delay: 0s;"></div>
   <div class="bubble" style="left: 15%; animation-delay: 2s; width: 15px; height: 15px;"></div>
   <div class="bubble" style="left: 25%; animation-delay: 4s;"></div>
@@ -231,7 +244,7 @@
   <h3>📊 Data Terkini</h3>
   <div class="data">🌡️ Suhu: <span id="suhu">--</span> °C</div>
   <div class="data">💧 Kelembapan: <span id="kelembapan">--</span> %</div>
-
+  
   <div class="pump-container">
     <button id="pompa" class="pump-button pump-off"></button>
   </div>
@@ -243,11 +256,10 @@
   </div>
 </div>
 
-<!-- MENU BUTTON Stylish di Bawah -->
 <div class="menu">
   <button onclick="window.location.href='admin.html'">⚙️ Admin</button>
   <button onclick="window.location.href='akun.html'">👤 Akun</button>
-  <button onclick="window.location.href='riwayat.html'">📜 Riwayat</button>
+  <button onclick="window.location.href='riwayat.html'">📚 Riwayat</button>
 </div>
 
 <script>
