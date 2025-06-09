@@ -33,9 +33,6 @@
       text-align: center;
       position: relative;
       z-index: 10;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
     }
 
     .card h3 {
@@ -44,10 +41,17 @@
       font-size: 22px;
     }
 
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+      margin-top: 20px;
+    }
+
     .btn {
       display: inline-block;
       padding: 14px 28px;
-      margin: 12px 10px;
       border-radius: 8px;
       border: none;
       background: #0077c2;
@@ -56,8 +60,9 @@
       text-decoration: none;
       cursor: pointer;
       transition: all 0.3s;
-      width: 80%;
       max-width: 300px;
+      width: 80%;
+      text-align: center;
     }
 
     .btn:hover {
@@ -213,6 +218,7 @@
       cursor: pointer;
     }
 
+    /* Bubbles background */
     .bubbles {
       position: fixed;
       top: 0;
@@ -246,47 +252,34 @@
       100% { bottom: 110%; transform: translateX(-30px) scale(1.2); opacity: 0; }
     }
 
-    @media (max-width: 768px) {
-      .navbar { font-size: 20px; padding: 12px; }
-      .card { margin: 20px 10px; padding: 20px; }
-      .card h3 { font-size: 20px; }
-      .btn { padding: 12px 24px; font-size: 16px; width: 90%; }
-      .btn-small { padding: 10px 16px; font-size: 14px; }
-      .modal-content { padding: 20px; }
-      .modal-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-      .modal-header h3 { font-size: 20px; }
-      .profile-pic-container { width: 80px; height: 80px; }
-      .profile-pic { border-width: 2px; }
-      .change-pic-btn { width: 26px; height: 26px; font-size: 12px; }
-      .form-group input { font-size: 15px; padding: 10px 12px; }
-      .form-actions { flex-direction: column; align-items: stretch; }
-      .form-actions button { width: 100%; }
-      .loading-content { padding: 20px; }
-      .loading-content h3 { font-size: 18px; }
-      .loading-content p { font-size: 14px; }
+    /* Responsiveness */
+    @media (max-width: 480px) {
+      .btn {
+        font-size: 16px;
+        padding: 12px 20px;
+      }
     }
   </style>
 </head>
-<body>
 
+<body>
 <div class="bubbles">
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
-  <div class="bubble"></div>
+  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
+  <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
 </div>
 
 <div class="navbar">👤 Akun Saya</div>
 
 <div class="card">
   <h3>Profil & Pengaturan Akun</h3>
-  <button class="btn" onclick="openEditProfile()">⚙️ Ubah Profil</button><br>
-  <button class="btn btn-logout" onclick="confirmLogout()">🚪 Logout</button><br><br>
-  <a href="dashboard.html" class="btn btn-secondary">🔙 Kembali</a>
+  <div class="button-group">
+    <button class="btn" onclick="openEditProfile()">⚙️ Ubah Profil</button>
+    <button class="btn btn-logout" onclick="confirmLogout()">🚪 Logout</button>
+    <a href="dashboard.html" class="btn btn-secondary">🔙 Kembali</a>
+  </div>
 </div>
 
+<!-- Modal Edit Profil -->
 <div class="modal" id="editProfileModal">
   <div class="modal-content">
     <div class="modal-header">
@@ -294,22 +287,22 @@
       <button class="close-btn" onclick="closeEditProfile()">&times;</button>
     </div>
     <div class="profile-pic-container">
-      <img src="https://via.placeholder.com/100x100?text=USER" class="profile-pic" id="profilePicture">
+      <img src="https://via.placeholder.com/100x100?text=USER" alt="Profile" class="profile-pic" id="profilePicture">
       <button class="change-pic-btn" onclick="document.getElementById('profileUpload').click()">+</button>
       <input type="file" id="profileUpload" accept="image/*" style="display: none;">
     </div>
     <form id="profileForm">
       <div class="form-group">
         <label for="fullName">Nama Lengkap</label>
-        <input type="text" id="fullName">
+        <input type="text" id="fullName" placeholder="Masukkan nama lengkap">
       </div>
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email">
+        <input type="email" id="email" placeholder="Masukkan email">
       </div>
       <div class="form-group">
         <label for="phone">Nomor Telepon</label>
-        <input type="tel" id="phone">
+        <input type="tel" id="phone" placeholder="Masukkan nomor telepon">
       </div>
       <div class="form-actions">
         <button type="button" class="btn btn-secondary btn-small" onclick="closeEditProfile()">Batal</button>
@@ -330,13 +323,15 @@
   function openEditProfile() {
     document.getElementById('editProfileModal').style.display = 'flex';
   }
+
   function closeEditProfile() {
     document.getElementById('editProfileModal').style.display = 'none';
   }
+
   function confirmLogout() {
-    if (confirm('Yakin logout?')) {
+    if (confirm('Apakah Anda yakin ingin logout?')) {
       document.getElementById('loadingOverlay').style.display = 'flex';
-      setTimeout(() => { window.location.href = 'landing.html'; }, 2000);
+      setTimeout(() => { window.location.href = "landing.html"; }, 2000);
     }
   }
 </script>
