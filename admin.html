@@ -5,7 +5,7 @@
   <title>Chat Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -47,9 +47,9 @@
 
     .button-group {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      flex-direction: column;
       gap: 16px;
+      align-items: center;
     }
 
     .btn-custom {
@@ -57,34 +57,29 @@
       border-radius: 12px;
       padding: 12px 20px;
       font-size: 15px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       text-decoration: none;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: all 0.2s ease-in-out;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease-in-out;
       color: #fff;
-      min-width: 160px;
+      min-width: 180px;
       text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     }
 
-    .btn-chat {
-      background-color: #0090ff;
-    }
-
-    .btn-chat:hover {
-      background-color: #0078d4;
-    }
-
+    .btn-chat,
     .btn-back {
-      background-color: #17a2b8;
+      background: linear-gradient(to right, #00B4DB, #0083B0);
     }
 
+    .btn-chat:hover,
     .btn-back:hover {
-      background-color: #138fa1;
+      background: linear-gradient(to right, #0083B0, #00B4DB);
+      transform: translateY(-2px);
     }
 
     @media (max-width: 480px) {
