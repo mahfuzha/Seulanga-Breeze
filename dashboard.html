@@ -2,156 +2,292 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Monitoring Seulanga Breeze</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <title>Seulanga Breeze</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
+    :root {
+      --primary: #0077c2;
+      --accent: #0099ff;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+      --notif-high: #ff5252;
+      --notif-normal: #55efc4;
     }
 
     body {
-      background: #e9f3fb;
-      color: #333;
-    }
-
-    header {
-      background-color: #0288d1;
-      padding: 20px;
-      text-align: center;
-      color: white;
-      font-size: 22px;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
-
-    .container {
+      font-family: 'Segoe UI', sans-serif;
+      background: #e3edf7;
+      margin: 0;
+      padding: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      margin: 30px 10px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .navbar {
+      background: var(--primary);
+      color: #fff;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      padding: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .bubbles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      border-radius: 50%;
+      background-color: rgba(0, 183, 255, 0.15);
+      animation: floatBubble 10s infinite ease-in;
+    }
+
+    @keyframes floatBubble {
+      to {
+        transform: translateY(-1000px) scale(1.5);
+        opacity: 0;
+      }
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 400px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 20px auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      max-width: 420px;
+      z-index: 1;
+      position: relative;
+    }
+
+    .card h3, .data, .pump-label, .location-data {
       text-align: center;
     }
 
-    .card h3 {
-      margin-bottom: 15px;
-      font-size: 20px;
+    .data {
+      font-size: 18px;
+      margin: 8px 0;
       color: #333;
     }
 
-    .data-item {
-      margin: 8px 0;
-      font-size: 16px;
+    .notif {
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      margin: 0 20px 20px;
+      font-size: 17px;
+      font-weight: 500;
+      display: none;
     }
 
-    .status-pompa {
-      margin: 20px auto;
-      width: 60px;
-      height: 60px;
-      background: red;
+    .notif.aktif {
+      background: var(--notif-high);
+      color: #fff;
+    }
+
+    .notif.normal {
+      background: var(--notif-normal);
+      color: #000;
+    }
+
+    .pump-container {
+      display: flex;
+      justify-content: center;
+      margin: 16px 0;
+    }
+
+    .pump-button {
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
-      box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
-    .lokasi {
-      margin-top: 15px;
-      font-size: 14px;
-      color: #444;
-      line-height: 1.4;
+    .pump-on {
+      background-color: var(--success);
+      box-shadow: 0 0 15px var(--success);
+    }
+
+    .pump-off {
+      background-color: var(--danger);
+      box-shadow: 0 0 15px var(--danger);
     }
 
     .menu {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 25px;
-      gap: 10px;
+      justify-content: space-around;
+      padding: 8px;
+      gap: 8px;
+      background: #fff;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+      position: sticky;
+      bottom: 0;
+      z-index: 2;
     }
 
     .menu button {
-      flex: 1 1 100px;
-      background: #0288d1;
-      color: white;
-      border: none;
+      flex: 1 1 auto;
+      min-width: 100px;
       padding: 12px 20px;
-      border-radius: 30px;
+      border-radius: 16px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 500;
       cursor: pointer;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       transition: all 0.3s ease;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.12);
     }
 
     .menu button:hover {
-      background: #0277bd;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-
-    .menu button i {
-      margin-right: 8px;
+      background: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
     }
 
     @media (max-width: 600px) {
-      header {
-        font-size: 18px;
-        padding: 15px;
-      }
-
       .card {
-        padding: 20px;
+        padding: 12px;
+        margin: 14px auto;
+        max-width: 95%;
       }
-
-      .menu {
-        flex-direction: column;
-        gap: 12px;
-      }
-
+      .data, .location-data { font-size: 16px; }
+      .pump-button { width: 60px; height: 60px; }
       .menu button {
-        width: 100%;
+        font-size: 14px;
+        padding: 10px 16px;
+        min-width: 90px;
       }
     }
   </style>
-
-  <!-- Icon CDN -->
-  <script src="https://kit.fontawesome.com/9e9c2a8cb7.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
 
-  <header>☁️ Monitoring Seulanga Breeze</header>
+<div class="bubbles" id="bubbles"></div>
+<div class="navbar">🌤️ Monitoring Seulanga Breeze</div>
+<div id="notif" class="notif"></div>
 
-  <div class="container">
-    <div class="card">
-      <h3>📊 Data Terkini</h3>
-      <div class="data-item">🌡️ Suhu: -- °C</div>
-      <div class="data-item">💧 Kelembapan: -- %</div>
+<div class="card">
+  <h3>📊 Data Terkini</h3>
+  <div class="data">🌡️ Suhu: <span id="suhu">--</span> °C</div>
+  <div class="data">💧 Kelembapan: <span id="kelembapan">--</span> %</div>
 
-      <div class="status-pompa"></div>
-      <div class="data-item">Status Pompa</div>
-
-      <div class="lokasi">
-        📍 Jalan Teungku Chik Dipineung Raya, Pineung, Syiah Kuala, Banda Aceh, Aceh, Sumatra, 23122, Indonesia
-      </div>
-    </div>
-
-    <div class="menu">
-      <button><i class="fas fa-cog"></i> Admin</button>
-      <button><i class="fas fa-user"></i> Akun</button>
-      <button><i class="fas fa-database"></i> Riwayat</button>
-    </div>
+  <div class="pump-container">
+    <button id="pompa" class="pump-button pump-off"></button>
   </div>
+  <div class="pump-label">Status Pompa</div>
+
+  <div class="location-data">
+    📍 <span id="location-text">Mengambil lokasi...</span>
+  </div>
+</div>
+
+<div class="menu">
+  <button data-url="admin.html">⚙️ Admin</button>
+  <button data-url="akun.html">👤 Akun</button>
+  <button data-url="riwayat.html">📚 Riwayat</button>
+</div>
+
+<script>
+  const client = mqtt.connect('wss://test.mosquitto.org:8081');
+  const DEFAULT_LOCATION = "Jeulingke, Syiah Kuala, Banda Aceh";
+  const notif = document.getElementById('notif');
+  const suhuEl = document.getElementById('suhu');
+  const kelembapanEl = document.getElementById('kelembapan');
+  const pompaBtn = document.getElementById('pompa');
+  const locationText = document.getElementById('location-text');
+
+  // Bubble randomizer
+  const createBubbles = () => {
+    const container = document.getElementById('bubbles');
+    for (let i = 0; i < 12; i++) {
+      const b = document.createElement('div');
+      b.className = 'bubble';
+      b.style.left = `${Math.random() * 100}%`;
+      b.style.animationDelay = `${Math.random() * 5}s`;
+      b.style.width = b.style.height = `${10 + Math.random() * 25}px`;
+      container.appendChild(b);
+    }
+  };
+
+  client.on('connect', () => {
+    console.log('Terkoneksi ke MQTT');
+    ['tekkom/iot/data', 'tekkom/iot/pompa', 'tekkom/iot/location'].forEach(topic => client.subscribe(topic));
+    getLocation();
+  });
+
+  client.on('message', (topic, message) => {
+    const msg = message.toString();
+    if (topic === 'tekkom/iot/data') {
+      const data = JSON.parse(msg);
+      suhuEl.textContent = data.suhu;
+      kelembapanEl.textContent = data.kelembapan;
+      notif.textContent = data.suhu > 35 ? '🔥 Suhu Tinggi, Pompa Aktif!' : '✅ Suhu Normal, Pompa Mati.';
+      notif.className = `notif ${data.suhu > 35 ? 'aktif' : 'normal'}`;
+      notif.style.display = 'block';
+    }
+    if (topic === 'tekkom/iot/pompa') {
+      pompaBtn.className = `pump-button ${msg === 'HIDUP' ? 'pump-on' : 'pump-off'}`;
+    }
+    if (topic === 'tekkom/iot/location') {
+      try {
+        const loc = JSON.parse(msg);
+        updateLocationDisplay(loc);
+      } catch (err) {
+        console.error('Lokasi tidak valid:', err);
+      }
+    }
+  });
+
+  const getLocation = () => {
+    navigator.geolocation?.getCurrentPosition(
+      ({ coords: { latitude, longitude } }) => {
+        const loc = { latitude, longitude };
+        client.publish('tekkom/iot/location', JSON.stringify(loc));
+        updateLocationDisplay(loc);
+      },
+      () => locationText.textContent = DEFAULT_LOCATION
+    );
+  };
+
+  const updateLocationDisplay = (loc) => {
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${loc.latitude}&lon=${loc.longitude}`)
+      .then(res => res.json())
+      .then(data => locationText.textContent = data.display_name || `Lat: ${loc.latitude}, Lon: ${loc.longitude}`)
+      .catch(() => locationText.textContent = `Lat: ${loc.latitude}, Lon: ${loc.longitude}`);
+  };
+
+  pompaBtn.addEventListener('click', () => {
+    const isOn = pompaBtn.classList.contains('pump-on');
+    client.publish('tekkom/iot/pompa', isOn ? 'MATI' : 'HIDUP');
+  });
+
+  document.querySelectorAll('.menu button').forEach(btn => {
+    btn.addEventListener('click', () => window.location.href = btn.dataset.url);
+  });
+
+  createBubbles();
+</script>
 
 </body>
 </html>
