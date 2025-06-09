@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Riwayat Realtime - Mist Spray IoT</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #e3edf7;
+      margin: 0;
+      padding: 0;
+    }
+    .navbar {
+      background: #0077c2;
+      padding: 15px;
+      color: #fff;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 30px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background: #0077c2;
+      color: #fff;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 26px;
+      margin-top: 20px;
+      border-radius: 8px;
+      background: #0077c2;
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="navbar">📊 Riwayat Monitoring Realtime</div>
+
+<div class="card">
+  <h3>Data Riwayat Monitoring Realtime</h3>
+
+  <table id="riwayatTable">
+    <thead>
+      <tr>
+        <th>Hari</th>
+        <th>Tanggal</th>
+        <th>Waktu</th>
+        <th>Suhu (°C)</th>
+        <th>Kelembapan (%)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data realtime masuk di sini -->
+    </tbody>
+  </table>
+
+  <a href="dashboard.html" class="btn">🔙 Kembali</a>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+<script>
+  // Konfigurasi Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbom5P4WH7MFLJJtTLiEqfbeu2paxcNAs",
+    authDomain: "seulanga-breeze.firebaseapp.com",
+    databaseURL: "https://seulanga-breeze-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "seulanga-breeze",
+    storageBucket: "seulanga-breeze.firebasestorage.app",
+    messagingSenderId: "707646859919",
+    appId: "1:707646859919:web:11a1458487033e93dd1efa",
+    measurementId: "G-NXMYQW1JCW"
+  };
+
+  // Inisialisasi Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Koneksi ke broker MQTT WebSocket
+  const client = mqtt.connect("wss://test.mosquitto.org:8081");
+
+  client.on("connect", () => {
+    console.log("Terkoneksi ke MQTT broker");
+    client.subscribe("tekkom/iot/data");
+  });
+
+  client.on("message", (topic, message) => {
+    try {
+      const data = JSON.parse(message.toString());
+      const waktuSekarang = new Date();
+      const hari = new Intl.DateTimeFormat('id-ID', { weekday: 'long' }).format(waktuSekarang);
+      const tanggal = waktuSekarang.toLocaleDateString('id-ID');
+      const waktu = waktuSekarang.toLocaleTimeString();
+
+      const suhu = data.suhu || 0;
+      const kelembapan = data.kelembapan || 0;
+
+      tambahBaris(hari, tanggal, waktu, suhu, kelembapan);
+
+      // Simpan ke Firebase
+      const newData = {
+        hari, tanggal, waktu, suhu, kelembapan
+      };
+      db.ref("riwayat").push(newData);
+
+    } catch (err) {
+      console.error("Gagal proses data MQTT:", err);
+    }
+  });
+
+  // Load data lama dari Firebase
+  db.ref("riwayat").on("value", snapshot => {
+    const data = snapshot.val();
+    const table = document.getElementById("riwayatTable").getElementsByTagName("tbody")[0];
+    table.innerHTML = ""; // clear data lama
+
+    if (data) {
+      Object.values(data).forEach(item => {
+        tambahBaris(
+          item.hari || "-", 
+          item.tanggal || "-", 
+          item.waktu || "-", 
+          item.suhu, 
+          item.kelembapan
+        );
+      });
+    }
+  });
+
+  // Fungsi menambahkan baris ke tabel
+  function tambahBaris(hari, tanggal, waktu, suhu, kelembapan) {
+    const table = document.getElementById("riwayatTable").getElementsByTagName("tbody")[0];
+    const newRow = table.insertRow();
+
+    newRow.insertCell(0).innerText = hari;
+    newRow.insertCell(1).innerText = tanggal;
+    newRow.insertCell(2).innerText = waktu;
+    newRow.insertCell(3).innerText = suhu;
+    newRow.insertCell(4).innerText = kelembapan;
+  }
+</script>
+
+</body>
+</html>

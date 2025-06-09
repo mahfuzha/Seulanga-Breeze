@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Akun Saya - Mist Spray IoT</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #e3edf7;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar {
+      background: #0077c2;
+      padding: 15px;
+      color: #fff;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      position: relative;
+      z-index: 10;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 25px;
+      margin: 30px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #0077c2;
+      font-size: 22px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 28px;
+      margin: 12px 10px;
+      border-radius: 8px;
+      border: none;
+      background: #0077c2;
+      color: #fff;
+      font-size: 18px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 80%;
+      max-width: 300px;
+    }
+
+    .btn:hover {
+      background: #005b99;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .btn-logout {
+      background: #dc3545;
+    }
+
+    .btn-logout:hover {
+      background: #c82333;
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+    }
+
+    .btn-secondary:hover {
+      background: #5a6268;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      display: none;
+    }
+
+    .loading-content {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1001;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+      animation: modalFadeIn 0.3s;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 15px;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      color: #0077c2;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #777;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .btn-small {
+      padding: 10px 20px;
+      width: auto;
+    }
+
+    .profile-pic-container {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 20px;
+    }
+
+    .profile-pic {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #0077c2;
+    }
+
+    .change-pic-btn {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: #0077c2;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* Bubbles background */
+    .bubbles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      animation: rise 20s infinite ease-in;
+    }
+
+    .bubble:nth-child(1) {
+      left: 10%;
+      width: 25px;
+      height: 25px;
+      animation-duration: 15s;
+    }
+
+    .bubble:nth-child(2) {
+      left: 20%;
+      width: 20px;
+      height: 20px;
+      animation-duration: 18s;
+    }
+
+    .bubble:nth-child(3) {
+      left: 35%;
+      width: 30px;
+      height: 30px;
+      animation-duration: 22s;
+    }
+
+    .bubble:nth-child(4) {
+      left: 50%;
+      width: 40px;
+      height: 40px;
+      animation-duration: 17s;
+    }
+
+    .bubble:nth-child(5) {
+      left: 65%;
+      width: 15px;
+      height: 15px;
+      animation-duration: 20s;
+    }
+
+    .bubble:nth-child(6) {
+      left: 80%;
+      width: 35px;
+      height: 35px;
+      animation-duration: 19s;
+    }
+
+    @keyframes rise {
+      0% {
+        bottom: -100px;
+        transform: translateX(0) scale(1);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.4;
+      }
+      100% {
+        bottom: 110%;
+        transform: translateX(-30px) scale(1.2);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bubbles">
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+  <div class="bubble"></div>
+</div>
+
+<div class="navbar">👤 Akun Saya</div>
+
+<div class="card">
+  <h3>Profil & Pengaturan Akun</h3>
+  
+  <button class="btn" onclick="openEditProfile()">⚙️ Ubah Profil</button>
+  <br>
+  <button class="btn btn-logout" onclick="confirmLogout()">🚪 Logout</button>
+  <br><br>
+  <a href="dashboard.html" class="btn btn-secondary">🔙 Kembali</a>
+</div>
+
+<!-- Modal Edit Profil -->
+<div class="modal" id="editProfileModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Edit Profil</h3>
+      <button class="close-btn" onclick="closeEditProfile()">&times;</button>
+    </div>
+    
+    <div class="profile-pic-container">
+      <img src="https://via.placeholder.com/100x100?text=USER" alt="Profile" class="profile-pic" id="profilePicture">
+      <button class="change-pic-btn" onclick="document.getElementById('profileUpload').click()">+</button>
+      <input type="file" id="profileUpload" accept="image/*" style="display: none;">
+    </div>
+    
+    <form id="profileForm">
+      <div class="form-group">
+        <label for="fullName">Nama Lengkap</label>
+        <input type="text" id="fullName" placeholder="Masukkan nama lengkap">
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Masukkan email">
+      </div>
+      
+      <div class="form-group">
+        <label for="phone">Nomor Telepon</label>
+        <input type="tel" id="phone" placeholder="Masukkan nomor telepon">
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary btn-small" onclick="closeEditProfile()">Batal</button>
+        <button type="submit" class="btn btn-small">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-content">
+    <h3>Sedang memproses logout...</h3>
+    <p>Anda akan diarahkan ke halaman login</p>
+  </div>
+</div>
+
+<script>
+  function openEditProfile() {
+    document.getElementById('editProfileModal').style.display = 'flex';
+    loadProfileData();
+  }
+
+  function closeEditProfile() {
+    document.getElementById('editProfileModal').style.display = 'none';
+  }
+
+  function loadProfileData() {
+    const profileData = {
+      fullName: "John Doe",
+      email: "john.doe@example.com",
+      phone: "+628123456789",
+      profilePic: "https://via.placeholder.com/100x100?text=USER"
+    };
+    
+    document.getElementById('fullName').value = profileData.fullName;
+    document.getElementById('email').value = profileData.email;
+    document.getElementById('phone').value = profileData.phone;
+    document.getElementById('profilePicture').src = profileData.profilePic;
+  }
+
+  document.getElementById('profileUpload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        document.getElementById('profilePicture').src = event.target.result;
+        localStorage.setItem('profilePicture', event.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById('profileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const fullName = document.getElementById('fullName').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+
+    localStorage.setItem('profileFullName', fullName);
+    localStorage.setItem('profileEmail', email);
+    localStorage.setItem('profilePhone', phone);
+    
+    alert('Profil berhasil diperbarui!');
+    closeEditProfile();
+  });
+
+  function confirmLogout() {
+    if (confirm('Apakah Anda yakin ingin logout?')) {
+      showLoading();
+      processLogout();
+    }
+  }
+
+  function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+  }
+
+  function processLogout() {
+    setTimeout(() => {
+      localStorage.removeItem('authToken');
+      sessionStorage.removeItem('userData');
+      window.location.href = "landing.html";
+    }, 2000);
+  }
+
+  window.onbeforeunload = function() {
+    if (document.getElementById('loadingOverlay').style.display === 'flex') {
+      return "Anda sedang dalam proses logout. Yakin ingin meninggalkan halaman?";
+    }
+  };
+
+  window.onload = function() {
+    const savedPic = localStorage.getItem('profilePicture');
+    const savedName = localStorage.getItem('profileFullName');
+    const savedEmail = localStorage.getItem('profileEmail');
+    const savedPhone = localStorage.getItem('profilePhone');
+    
+    if (savedPic) document.getElementById('profilePicture').src = savedPic;
+    if (savedName) document.getElementById('fullName').value = savedName;
+    if (savedEmail) document.getElementById('email').value = savedEmail;
+    if (savedPhone) document.getElementById('phone').value = savedPhone;
+  };
+</script>
+
+</body>
+</html>
