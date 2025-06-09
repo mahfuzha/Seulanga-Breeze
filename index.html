@@ -1,280 +1,262 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seulanga Breeze - ESP32 IoT System</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #e6f3ff 0%, #c8e4fa 100%);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            color: #2c3e50;
-        }
-        
-        .container {
-            text-align: center;
-            padding: 20px;
-            max-width: 800px;
-        }
-        
-        .logo-container {
-            position: relative;
-            margin-bottom: 40px;
-        }
-        
-        .logo-img {
-            width: 180px;
-            height: auto;
-            animation: jump 1s infinite alternate;
-            filter: drop-shadow(0 8px 20px rgba(45, 152, 218, 0.3));
-        }
-        
-        .logo-text {
-            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
-            font-size: 2.8rem;
-            font-weight: bold;
-            color: #2d98da;
-            margin-top: 15px;
-            text-shadow: 0 2px 8px rgba(45, 152, 218, 0.2);
-            letter-spacing: 1px;
-        }
-        
-        .esp32-badge {
-            background: #2d98da;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        @keyframes jump {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-25px) rotate(3deg);
-            }
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-        }
-        
-        h1 {
-            color: #2c3e50;
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-        }
-        
-        .tagline {
-            font-size: 1.3rem;
-            color: #4b6584;
-            margin-bottom: 25px;
-            font-weight: 500;
-        }
-        
-        .description {
-            color: #4b6584;
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto 40px;
-            line-height: 1.7;
-        }
-        
-        .btn-container {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 14px 35px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            font-size: 1.1rem;
-            border: none;
-            cursor: pointer;
-            min-width: 180px;
-        }
-        
-        .btn-primary {
-            background: #2d98da;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background: #227fbb;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 18px rgba(45, 152, 218, 0.3);
-        }
-        
-        .btn-secondary {
-            background: white;
-            color: #2d98da;
-            border: 2px solid #2d98da;
-        }
-        
-        .btn-secondary:hover {
-            background: #f5f9ff;
-            transform: translateY(-3px);
-        }
-        
-        .bubbles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
-        }
-        
-        .bubble {
-            position: absolute;
-            bottom: -100px;
-            background: rgba(45, 152, 218, 0.08);
-            border-radius: 40%;
-            animation: rise 12s infinite ease-in;
-            opacity: 0.7;
-        }
-        
-        @keyframes rise {
-            0% {
-                bottom: -100px;
-                transform: translateX(0) scale(0.8);
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.7;
-            }
-            100% {
-                bottom: 1000px;
-                transform: translateX(calc((var(--random) - 0.5) * 200px)) scale(1.2);
-                opacity: 0;
-            }
-        }
-        
-        @media (max-width: 600px) {
-            .logo-text {
-                font-size: 2rem;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .btn {
-                padding: 12px 25px;
-                min-width: 160px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seulanga Breeze - ESP32 IoT System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e6f3ff 0%, #c8e4fa 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      color: #2c3e50;
+      position: relative;
+    }
+
+    .container {
+      text-align: center;
+      padding: 20px;
+      max-width: 800px;
+      z-index: 1;
+    }
+
+    .logo-container {
+      position: relative;
+      margin-bottom: 40px;
+    }
+
+    .logo-img {
+      width: 180px;
+      height: auto;
+      animation: jump 1s infinite alternate;
+      filter: drop-shadow(0 8px 20px rgba(45, 152, 218, 0.3));
+    }
+
+    .logo-text {
+      font-size: 2.8rem;
+      font-weight: bold;
+      color: #2d98da;
+      margin-top: 15px;
+      text-shadow: 0 2px 8px rgba(45, 152, 218, 0.2);
+      letter-spacing: 1px;
+    }
+
+    .esp32-badge {
+      background: #2d98da;
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    @keyframes jump {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-25px) rotate(3deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+    }
+
+    .tagline {
+      font-size: 1.3rem;
+      color: #4b6584;
+      margin-bottom: 25px;
+      font-weight: 500;
+    }
+
+    .description {
+      color: #4b6584;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 35px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      font-size: 1.1rem;
+      border: none;
+      cursor: pointer;
+      min-width: 180px;
+    }
+
+    .btn-primary {
+      background: #2d98da;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #227fbb;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(45, 152, 218, 0.3);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #2d98da;
+      border: 2px solid #2d98da;
+    }
+
+    .btn-secondary:hover {
+      background: #f5f9ff;
+      transform: translateY(-3px);
+    }
+
+    .bubbles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      background: rgba(45, 152, 218, 0.08);
+      border-radius: 50%;
+      animation: rise 12s infinite ease-in;
+      opacity: 0.7;
+    }
+
+    @keyframes rise {
+      0% { bottom: -100px; transform: translateX(0) scale(0.8); opacity: 0; }
+      20% { opacity: 0.7; }
+      100% { bottom: 1000px; transform: translateX(calc((var(--random) - 0.5) * 200px)) scale(1.2); opacity: 0; }
+    }
+
+    /* Responsif Tablet */
+    @media (max-width: 992px) {
+      .logo-text { font-size: 2.4rem; }
+      h1 { font-size: 2rem; }
+      .description { font-size: 1rem; }
+      .btn { padding: 12px 30px; min-width: 160px; font-size: 1rem; }
+    }
+
+    /* Responsif HP Landscape & Potrait */
+    @media (max-width: 768px) {
+      .logo-img { width: 150px; }
+      .logo-text { font-size: 2rem; }
+      h1 { font-size: 1.8rem; }
+      .tagline { font-size: 1.1rem; }
+      .description { font-size: 0.95rem; }
+      .btn { padding: 10px 25px; min-width: 150px; font-size: 0.95rem; }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 15px; }
+      .logo-img { width: 130px; }
+      .logo-text { font-size: 1.8rem; }
+      h1 { font-size: 1.6rem; }
+      .tagline { font-size: 1rem; }
+      .description { font-size: 0.9rem; }
+      .btn-container { flex-direction: column; gap: 15px; }
+      .btn { min-width: 140px; }
+    }
+
+  </style>
 </head>
 <body>
-    <div class="bubbles" id="bubbles"></div>
-    
-    <div class="container">
-        <div class="logo-container">
-            <img src="seulanga breeze.jpg" alt="Seulanga Breeze Logo" class="logo-img" id="jumpingLogo">
-            <div class="logo-text">Seulanga Breeze</div>
-            <div class="esp32-badge">ESP32 IoT SYSTEM</div>
-        </div>
-        
-        <h1>Sistem Kontrol Iklim Cerdas</h1>
-        <div class="tagline">Solusi Otomatis untuk Kenyamanan Ruangan Anda</div>
-        <p class="description">
-            Seulanga Breeze adalah sistem IoT berbasis ESP32 yang dirancang untuk memonitor dan mengontrol suhu serta kelembaban ruangan secara otomatis, memberikan Anda kenyamanan optimal dengan efisiensi energi.
-        </p>
-        
-        <div class="btn-container">
-            <a href="login.html" class="btn btn-primary">Mulai Sekarang</a>
-        </div>
+
+  <div class="bubbles" id="bubbles"></div>
+
+  <div class="container">
+    <div class="logo-container">
+      <img src="seulanga breeze.jpg" alt="Seulanga Breeze Logo" class="logo-img" id="jumpingLogo">
+      <div class="logo-text">Seulanga Breeze</div>
+      <div class="esp32-badge">ESP32 IoT SYSTEM</div>
     </div>
 
-    <script>
-        // Tambahkan gelembung secara dinamis
-        const bubblesContainer = document.getElementById('bubbles');
-        const bubbleCount = Math.floor(window.innerWidth / 30);
-        
-        for (let i = 0; i < bubbleCount; i++) {
-            const bubble = document.createElement('div');
-            bubble.classList.add('bubble');
-            
-            // Random size between 20 and 120px
-            const size = Math.random() * 100 + 20;
-            bubble.style.width = `${size}px`;
-            bubble.style.height = `${size}px`;
-            
-            // Random position
-            bubble.style.left = `${Math.random() * 100}%`;
-            
-            // Random animation duration between 8 and 20s
-            bubble.style.animationDuration = `${Math.random() * 12 + 8}s`;
-            
-            // Random delay
-            bubble.style.animationDelay = `${Math.random() * 5}s`;
-            
-            // Random movement direction
-            bubble.style.setProperty('--random', Math.random());
-            
-            bubblesContainer.appendChild(bubble);
-        }
+    <h1>Sistem Kontrol Iklim Cerdas</h1>
+    <div class="tagline">Solusi Otomatis untuk Kenyamanan Ruangan Anda</div>
+    <p class="description">
+      Seulanga Breeze adalah sistem IoT berbasis ESP32 yang dirancang untuk memonitor dan mengontrol suhu serta kelembaban ruangan secara otomatis, memberikan Anda kenyamanan optimal dengan efisiensi energi.
+    </p>
 
-        // Animasi logo dinamis
-        const logo = document.getElementById('jumpingLogo');
-        let animationStyle = document.createElement('style');
-        document.head.appendChild(animationStyle);
-        
-        function updateJumpAnimation() {
-            const jumpHeight = 20 + Math.random() * 15;
-            const rotateDegree = Math.random() * 8 - 4;
-            
-            animationStyle.textContent = `
-                @keyframes jump {
-                    0% { transform: translateY(0) rotate(0deg); }
-                    50% { transform: translateY(-${jumpHeight}px) rotate(${rotateDegree}deg); }
-                    100% { transform: translateY(0) rotate(0deg); }
-                }
-            `;
-            
-            // Trigger reflow
-            logo.style.animation = 'none';
-            void logo.offsetWidth;
-            logo.style.animation = 'jump 1s infinite alternate';
+    <div class="btn-container">
+      <a href="login.html" class="btn btn-primary">Mulai Sekarang</a>
+    </div>
+  </div>
+
+  <script>
+    const bubblesContainer = document.getElementById('bubbles');
+    const bubbleCount = Math.floor(window.innerWidth / 30);
+
+    for (let i = 0; i < bubbleCount; i++) {
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble');
+      const size = Math.random() * 100 + 20;
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+      bubble.style.left = `${Math.random() * 100}%`;
+      bubble.style.animationDuration = `${Math.random() * 12 + 8}s`;
+      bubble.style.animationDelay = `${Math.random() * 5}s`;
+      bubble.style.setProperty('--random', Math.random());
+      bubblesContainer.appendChild(bubble);
+    }
+
+    const logo = document.getElementById('jumpingLogo');
+    let animationStyle = document.createElement('style');
+    document.head.appendChild(animationStyle);
+
+    function updateJumpAnimation() {
+      const jumpHeight = 20 + Math.random() * 15;
+      const rotateDegree = Math.random() * 8 - 4;
+      animationStyle.textContent = `
+        @keyframes jump {
+          0% { transform: translateY(0) rotate(0deg); }
+          50% { transform: translateY(-${jumpHeight}px) rotate(${rotateDegree}deg); }
+          100% { transform: translateY(0) rotate(0deg); }
         }
-        
-        // Update animasi setiap detik
-        updateJumpAnimation();
-        setInterval(updateJumpAnimation, 1000);
-        
-        // Efek hover pada logo
-        logo.addEventListener('mouseover', () => {
-            logo.style.transform = 'scale(1.1)';
-            logo.style.transition = 'transform 0.3s ease';
-        });
-        
-        logo.addEventListener('mouseout', () => {
-            logo.style.transform = 'scale(1)';
-        });
-    </script>
+      `;
+      logo.style.animation = 'none';
+      void logo.offsetWidth;
+      logo.style.animation = 'jump 1s infinite alternate';
+    }
+    updateJumpAnimation();
+    setInterval(updateJumpAnimation, 1000);
+
+    logo.addEventListener('mouseover', () => {
+      logo.style.transform = 'scale(1.1)';
+      logo.style.transition = 'transform 0.3s ease';
+    });
+
+    logo.addEventListener('mouseout', () => {
+      logo.style.transform = 'scale(1)';
+    });
+  </script>
+
 </body>
 </html>
