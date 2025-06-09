@@ -60,6 +60,49 @@
       position: relative;
     }
 
+    .menu {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      padding: 10px 20px;
+      background: #f0f0f0;
+      position: sticky;
+      top: 60px;
+      z-index: 2;
+      gap: 10px;
+    }
+
+    .menu button {
+      padding: 12px 22px;
+      border-radius: 8px;
+      border: none;
+      background: #0077c2;
+      color: #fff;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+      flex: 1 1 auto;
+      min-width: 100px;
+    }
+
+    .menu button:hover {
+      background: #005b99;
+    }
+
+    @media (max-width: 600px) {
+      .menu {
+        flex-direction: column;
+        align-items: center;
+        position: sticky;
+        top: 60px;
+      }
+
+      .menu button {
+        width: 80%;
+        max-width: 300px;
+      }
+    }
+
     .card {
       background: #ffffff;
       border-radius: 12px;
@@ -105,44 +148,6 @@
     .notif.normal {
       background: #55efc4;
       color: #000;
-    }
-
-    .menu {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap; /* supaya bisa turun kalau sempit */
-      margin: 20px;
-      gap: 10px; /* jarak antar button */
-    }
-
-    .menu button {
-      padding: 12px 22px;
-      border-radius: 8px;
-      border: none;
-      background: #0077c2;
-      color: #fff;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background 0.3s;
-      flex: 1 1 auto; /* supaya button fleksibel */
-      min-width: 100px; /* minimal lebar */
-    }
-
-    .menu button:hover {
-      background: #005b99;
-    }
-
-    /* Responsif untuk layar kecil (misalnya HP) */
-    @media (max-width: 600px) {
-      .menu {
-        flex-direction: column; /* ditumpuk */
-        align-items: center;
-      }
-
-      .menu button {
-        width: 80%; /* button lebih besar di HP */
-        max-width: 300px;
-      }
     }
 
     .pump-container {
@@ -196,7 +201,6 @@
 
 <!-- 🫧 Bubble Background -->
 <div class="bubbles">
-  <!-- 20 bubble instances -->
   <div class="bubble" style="left: 5%; animation-delay: 0s;"></div>
   <div class="bubble" style="left: 15%; animation-delay: 2s; width: 15px; height: 15px;"></div>
   <div class="bubble" style="left: 25%; animation-delay: 4s;"></div>
@@ -209,9 +213,20 @@
   <div class="bubble" style="left: 95%; animation-delay: 1.2s;"></div>
 </div>
 
+<!-- Navbar -->
 <div class="navbar">🌤️ Monitoring Seulanga Breeze</div>
+
+<!-- Menu Button DIPINDAH ke atas -->
+<div class="menu">
+  <button onclick="window.location.href='admin.html'">Admin</button>
+  <button onclick="window.location.href='akun.html'">Akun</button>
+  <button onclick="window.location.href='riwayat.html'">Riwayat</button>
+</div>
+
+<!-- Notif -->
 <div id="notif" class="notif"></div>
 
+<!-- Card Data -->
 <div class="card">
   <h3>📊 Data Terkini</h3>
   <div class="data">🌡️ Suhu: <span id="suhu">--</span> °C</div>
@@ -226,12 +241,6 @@
     <span class="location-icon">📍</span>
     <span id="location-text">Mengambil lokasi...</span>
   </div>
-</div>
-
-<div class="menu">
-  <button onclick="window.location.href='admin.html'">Admin</button>
-  <button onclick="window.location.href='akun.html'">Akun</button>
-  <button onclick="window.location.href='riwayat.html'">Riwayat</button>
 </div>
 
 <script>
