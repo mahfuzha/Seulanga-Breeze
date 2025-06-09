@@ -71,20 +71,20 @@
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
-    .btn-logout {
-      background: #005b99;
-    }
-
-    .btn-logout:hover {
-      background: #005b99;
-    }
-
     .btn-secondary {
       background: #005b99;
     }
 
     .btn-secondary:hover {
+      background: #004777;
+    }
+
+    .btn-logout {
       background: #005b99;
+    }
+
+    .btn-logout:hover {
+      background: #004777;
     }
 
     .loading-overlay {
@@ -218,7 +218,6 @@
       cursor: pointer;
     }
 
-    /* Bubbles background */
     .bubbles {
       position: fixed;
       top: 0;
@@ -252,7 +251,6 @@
       100% { bottom: 110%; transform: translateX(-30px) scale(1.2); opacity: 0; }
     }
 
-    /* Responsiveness */
     @media (max-width: 480px) {
       .btn {
         font-size: 16px;
@@ -334,6 +332,18 @@
       setTimeout(() => { window.location.href = "landing.html"; }, 2000);
     }
   }
+
+  // Preview gambar profil setelah dipilih
+  document.getElementById('profileUpload').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('profilePicture').src = e.target.result;
+      }
+      reader.readAsDataURL(file);
+    }
+  });
 </script>
 
 </body>
