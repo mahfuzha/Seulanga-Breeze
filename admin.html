@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kontak Admin - Mist Spray IoT</title>
   <style>
     body {
@@ -9,7 +10,7 @@
       background: #e3edf7;
       margin: 0;
       padding: 0;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
     .navbar {
@@ -28,7 +29,8 @@
       background: #ffffff;
       border-radius: 12px;
       padding: 25px;
-      margin: 30px 20px;
+      margin: 40px auto;
+      max-width: 500px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.12);
       text-align: center;
       z-index: 2;
@@ -38,13 +40,13 @@
     .card h3 {
       margin-top: 0;
       color: #0077c2;
-      font-size: 22px;
+      font-size: 24px;
     }
 
     .btn {
       display: inline-block;
       padding: 14px 28px;
-      margin: 20px 10px;
+      margin: 20px 10px 0;
       border-radius: 8px;
       border: none;
       background: #0077c2;
@@ -52,14 +54,15 @@
       font-size: 18px;
       text-decoration: none;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: background 0.3s, transform 0.3s;
     }
 
     .btn:hover {
       background: #005b99;
+      transform: translateY(-2px);
     }
 
-    /* BUBBLE BACKGROUND */
+    /* Bubble Background */
     .bubbles {
       position: fixed;
       top: 0;
@@ -82,70 +85,66 @@
       animation: rise 15s infinite ease-in;
     }
 
-    .bubbles span:nth-child(1) {
-      left: 10%;
-      animation-duration: 12s;
-      animation-delay: 0s;
-    }
-
-    .bubbles span:nth-child(2) {
-      left: 20%;
-      width: 25px;
-      height: 25px;
-      animation-duration: 14s;
-      animation-delay: 2s;
-    }
-
-    .bubbles span:nth-child(3) {
-      left: 25%;
-      animation-duration: 11s;
-      animation-delay: 4s;
-    }
-
-    .bubbles span:nth-child(4) {
-      left: 40%;
-      width: 30px;
-      height: 30px;
-      animation-duration: 13s;
-      animation-delay: 1s;
-    }
-
-    .bubbles span:nth-child(5) {
-      left: 55%;
-      animation-duration: 10s;
-      animation-delay: 3s;
-    }
-
-    .bubbles span:nth-child(6) {
-      left: 70%;
-      width: 22px;
-      height: 22px;
-      animation-duration: 16s;
-      animation-delay: 0s;
-    }
-
-    .bubbles span:nth-child(7) {
-      left: 80%;
-      animation-duration: 9s;
-      animation-delay: 1.5s;
-    }
-
-    .bubbles span:nth-child(8) {
-      left: 90%;
-      width: 28px;
-      height: 28px;
-      animation-duration: 17s;
-      animation-delay: 2.5s;
-    }
+    .bubbles span:nth-child(1) { left: 10%; animation-duration: 12s; animation-delay: 0s; }
+    .bubbles span:nth-child(2) { left: 20%; width: 25px; height: 25px; animation-duration: 14s; animation-delay: 2s; }
+    .bubbles span:nth-child(3) { left: 25%; animation-duration: 11s; animation-delay: 4s; }
+    .bubbles span:nth-child(4) { left: 40%; width: 30px; height: 30px; animation-duration: 13s; animation-delay: 1s; }
+    .bubbles span:nth-child(5) { left: 55%; animation-duration: 10s; animation-delay: 3s; }
+    .bubbles span:nth-child(6) { left: 70%; width: 22px; height: 22px; animation-duration: 16s; animation-delay: 0s; }
+    .bubbles span:nth-child(7) { left: 80%; animation-duration: 9s; animation-delay: 1.5s; }
+    .bubbles span:nth-child(8) { left: 90%; width: 28px; height: 28px; animation-duration: 17s; animation-delay: 2.5s; }
 
     @keyframes rise {
-      0% {
-        transform: translateY(0) scale(1);
-        opacity: 0.2;
+      0%   { transform: translateY(0) scale(1); opacity: 0.2; }
+      100% { transform: translateY(-1200px) scale(0.8); opacity: 0; }
+    }
+
+    /* RESPONSIVE SECTION */
+    @media (max-width: 768px) {
+      .navbar {
+        font-size: 20px;
+        padding: 12px;
       }
-      100% {
-        transform: translateY(-1200px) scale(0.8);
-        opacity: 0;
+
+      .card {
+        margin: 30px 15px;
+        padding: 20px;
+      }
+
+      .card h3 {
+        font-size: 20px;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        font-size: 16px;
+        margin: 15px 5px 0;
+        display: block;
+        width: 100%;
+        max-width: 280px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .navbar {
+        font-size: 18px;
+        padding: 10px;
+      }
+
+      .card {
+        margin: 25px 10px;
+        padding: 18px;
+      }
+
+      .card h3 {
+        font-size: 18px;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        font-size: 15px;
       }
     }
   </style>
@@ -161,7 +160,6 @@
   <a href="dashboard.html" class="btn">🔙 Kembali</a>
 </div>
 
-<!-- Bubble Background -->
 <div class="bubbles">
   <span></span>
   <span></span>
