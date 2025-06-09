@@ -49,17 +49,36 @@
       margin: 20px 10px 0;
       border-radius: 8px;
       border: none;
-      background: #0077c2;
+      background: linear-gradient(135deg, #00b4db, #0083b0);
       color: #fff;
       font-size: 18px;
       text-decoration: none;
       cursor: pointer;
-      transition: background 0.3s, transform 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: all 0.35s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.15);
+      transform: skewX(-20deg);
+      transition: left 0.35s ease;
     }
 
     .btn:hover {
-      background: #005b99;
-      transform: translateY(-2px);
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    }
+
+    .btn:hover::before {
+      left: 130%;
     }
 
     /* Bubble Background */
