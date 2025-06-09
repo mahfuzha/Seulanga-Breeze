@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Riwayat Realtime - Mist Spray IoT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -10,6 +11,7 @@
       margin: 0;
       padding: 0;
     }
+
     .navbar {
       background: #0077c2;
       padding: 15px;
@@ -18,38 +20,83 @@
       font-size: 22px;
       font-weight: bold;
     }
+
     .card {
       background: #ffffff;
       border-radius: 12px;
       padding: 20px;
-      margin: 30px 20px;
+      margin: 30px auto;
       box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      max-width: 960px;
     }
+
+    .card h3 {
+      margin-top: 0;
+      text-align: center;
+      color: #333;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      min-width: 600px;
     }
+
     table, th, td {
       border: 1px solid #ccc;
     }
+
     th, td {
       padding: 10px;
       text-align: center;
     }
+
     th {
       background: #0077c2;
       color: #fff;
     }
+
     .btn {
       display: inline-block;
       padding: 12px 26px;
       margin-top: 20px;
       border-radius: 8px;
-      background: #0077c2;
+      background: linear-gradient(to right, #00B4DB, #0083B0);
       color: #fff;
       text-decoration: none;
       cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: linear-gradient(to right, #0083B0, #00B4DB);
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        font-size: 18px;
+        padding: 12px;
+      }
+
+      .card {
+        margin: 20px 15px;
+        padding: 15px;
+      }
+
+      table, th, td {
+        font-size: 14px;
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+      }
     }
   </style>
 </head>
@@ -60,30 +107,32 @@
 <div class="card">
   <h3>Data Riwayat Monitoring Realtime</h3>
 
-  <table id="riwayatTable">
-    <thead>
-      <tr>
-        <th>Hari</th>
-        <th>Tanggal</th>
-        <th>Waktu</th>
-        <th>Suhu (°C)</th>
-        <th>Kelembapan (%)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Data realtime masuk di sini -->
-    </tbody>
-  </table>
+  <div class="table-container">
+    <table id="riwayatTable">
+      <thead>
+        <tr>
+          <th>Hari</th>
+          <th>Tanggal</th>
+          <th>Waktu</th>
+          <th>Suhu (°C)</th>
+          <th>Kelembapan (%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data realtime akan muncul di sini -->
+      </tbody>
+    </table>
+  </div>
 
   <a href="dashboard.html" class="btn">🔙 Kembali</a>
 </div>
 
+<!-- Firebase & MQTT Scripts -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 <script>
-  // Konfigurasi Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyBbom5P4WH7MFLJJtTLiEqfbeu2paxcNAs",
     authDomain: "seulanga-breeze.firebaseapp.com",
@@ -95,11 +144,9 @@
     measurementId: "G-NXMYQW1JCW"
   };
 
-  // Inisialisasi Firebase
   const app = firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  // Koneksi ke broker MQTT WebSocket
   const client = mqtt.connect("wss://test.mosquitto.org:8081");
 
   client.on("connect", () => {
@@ -120,37 +167,24 @@
 
       tambahBaris(hari, tanggal, waktu, suhu, kelembapan);
 
-      // Simpan ke Firebase
-      const newData = {
-        hari, tanggal, waktu, suhu, kelembapan
-      };
-      db.ref("riwayat").push(newData);
-
+      db.ref("riwayat").push({ hari, tanggal, waktu, suhu, kelembapan });
     } catch (err) {
       console.error("Gagal proses data MQTT:", err);
     }
   });
 
-  // Load data lama dari Firebase
   db.ref("riwayat").on("value", snapshot => {
     const data = snapshot.val();
     const table = document.getElementById("riwayatTable").getElementsByTagName("tbody")[0];
-    table.innerHTML = ""; // clear data lama
+    table.innerHTML = "";
 
     if (data) {
       Object.values(data).forEach(item => {
-        tambahBaris(
-          item.hari || "-", 
-          item.tanggal || "-", 
-          item.waktu || "-", 
-          item.suhu, 
-          item.kelembapan
-        );
+        tambahBaris(item.hari || "-", item.tanggal || "-", item.waktu || "-", item.suhu, item.kelembapan);
       });
     }
   });
 
-  // Fungsi menambahkan baris ke tabel
   function tambahBaris(hari, tanggal, waktu, suhu, kelembapan) {
     const table = document.getElementById("riwayatTable").getElementsByTagName("tbody")[0];
     const newRow = table.insertRow();
