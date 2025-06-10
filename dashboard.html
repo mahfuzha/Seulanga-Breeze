@@ -108,6 +108,7 @@
       flex-wrap: wrap;
       margin: 20px auto;
       max-width: 400px;
+      box-sizing: border-box;
     }
 
     .menu button {
@@ -122,6 +123,8 @@
       transition: background 0.3s;
       white-space: normal;
       word-wrap: break-word;
+      text-align: center;
+      box-sizing: border-box;
     }
 
     .menu button:hover {
@@ -205,6 +208,7 @@
       .menu button {
         width: 95%;
         font-size: 15px;
+        padding: 14px;
       }
     }
   </style>
@@ -212,7 +216,7 @@
 
 <body>
 
-<div class="navbar">🌤️ Monitoring</div>
+<div class="navbar">🌤️ Monitoring Seulanga Breeze</div>
 <div id="notif" class="notif"></div>
 
 <div class="card">
@@ -257,7 +261,7 @@
       document.getElementById('kelembapan').textContent = data.kelembapan;
 
       const notif = document.getElementById('notif');
-      if (data.suhu > 30) {
+      if (data.suhu > 35) {
         notif.textContent = '🔥 Suhu Tinggi, Pompa Aktif!';
         notif.className = 'notif aktif';
         notif.style.display = 'block';
