@@ -88,10 +88,10 @@
   <main>
     <div class="card">
       <h2><span class="emoji">📊</span> Data Terkini</h2>
-      <p><span class="emoji">🌡️</span> Suhu: <span id="suhu">--</span> °C</p>
-      <p><span class="emoji">💧</span> Kelembapan: <span id="kelembapan">--</span> %</p>
+      <p><span class="emoji">🌡️</span> Suhu: <span id="suhu">Menunggu...</span> °C</p>
+      <p><span class="emoji">💧</span> Kelembapan: <span id="kelembapan">Menunggu...</span> %</p>
       <div class="status-pompa" id="status-pompa"></div>
-      <p>Status Pompa: <span id="status-pompa-text">--</span></p>
+      <p>Status Pompa: <span id="status-pompa-text">Menunggu...</span></p>
       <p><span class="emoji">📍</span> Pineung, Syiah Kuala, Banda Aceh, Aceh, Sumatra, 23122, Indonesia</p>
     </div>
   </main>
@@ -110,8 +110,12 @@
     const clientID = "webclient_" + Math.floor(Math.random() * 10000);
     const client = new Paho.MQTT.Client(mqttHost, mqttPort, clientID);
 
+    // Reconnect timer
+    let reconnectTimeout = 2000;
+
     client.onConnectionLost = function(responseObject) {
       console.log("Koneksi MQTT terputus: " + responseObject.errorMessage);
+      setTimeout(connectMQTT, reconnectTimeout);
     };
 
     client.onMessageArrived = function(message) {
@@ -120,15 +124,19 @@
       if (message.destinationName === "tekkom/iot/data") {
         try {
           const data = JSON.parse(message.payloadString);
-          document.getElementById("suhu").textContent = data.suhu.toFixed(1);
-          document.getElementById("kelembapan").textContent = data.kelembapan.toFixed(1);
+          if (data.suhu !== undefined && data.kelembapan !== undefined) {
+            document.getElementById("suhu").textContent = data.suhu.toFixed(1);
+            document.getElementById("kelembapan").textContent = data.kelembapan.toFixed(1);
+          } else {
+            console.warn("Format data tidak sesuai:", data);
+          }
         } catch (err) {
           console.error("Error parsing data:", err);
         }
       }
 
       if (message.destinationName === "tekkom/iot/pompa") {
-        const status = message.payloadString;
+        const status = message.payloadString.trim();
         const statusElem = document.getElementById("status-pompa");
         const statusText = document.getElementById("status-pompa-text");
 
@@ -136,25 +144,33 @@
           statusElem.style.backgroundColor = "#4caf50";
           statusElem.style.boxShadow = "0 0 20px rgba(76,175,80,0.5)";
           statusText.textContent = "HIDUP";
-        } else {
+        } else if (status === "MATI") {
           statusElem.style.backgroundColor = "#f44336";
           statusElem.style.boxShadow = "0 0 20px rgba(244,67,54,0.5)";
           statusText.textContent = "MATI";
+        } else {
+          console.warn("Status pompa tidak dikenal:", status);
         }
       }
     };
 
-    client.connect({
-      onSuccess: function() {
-        console.log("Terhubung ke MQTT broker");
-        client.subscribe("tekkom/iot/data");
-        client.subscribe("tekkom/iot/pompa");
-      },
-      onFailure: function(err) {
-        console.error("Gagal koneksi:", err.errorMessage);
-      },
-      useSSL: true
-    });
+    function connectMQTT() {
+      client.connect({
+        onSuccess: function() {
+          console.log("Terhubung ke MQTT broker");
+          client.subscribe("tekkom/iot/data");
+          client.subscribe("tekkom/iot/pompa");
+        },
+        onFailure: function(err) {
+          console.error("Gagal koneksi:", err.errorMessage);
+          setTimeout(connectMQTT, reconnectTimeout);
+        },
+        useSSL: true
+      });
+    }
+
+    // Mulai koneksi MQTT saat halaman load
+    connectMQTT();
   </script>
 </body>
 </html>
