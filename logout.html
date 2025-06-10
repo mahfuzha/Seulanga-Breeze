@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Akun Saya</title>
     <style>
         body {
@@ -10,6 +11,7 @@
             margin: 0;
             padding: 20px;
         }
+
         .account-container {
             background: #ffffff;
             border-radius: 12px;
@@ -18,9 +20,20 @@
             max-width: 600px;
             margin: 0 auto;
         }
+
         h1 {
             color: #0077c2;
+            margin-bottom: 10px;
+            font-size: 26px;
         }
+
+        h2 {
+            color: #555;
+            font-weight: normal;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
         .menu-item {
             display: block;
             padding: 15px;
@@ -30,21 +43,38 @@
             text-decoration: none;
             color: #333;
             font-size: 16px;
+            text-align: center;
             transition: all 0.3s;
         }
+
         .menu-item:hover {
             background: #e0e0e0;
         }
+
         .menu-item.logout {
             color: #dc3545;
             background: #ffebee;
         }
+
         .menu-item.logout:hover {
             background: #ffcdd2;
+        }
+
+        /* Responsif */
+        @media (max-width: 600px) {
+            .account-container {
+                padding: 15px;
+            }
+
+            .menu-item {
+                font-size: 15px;
+                padding: 12px;
+            }
         }
     </style>
 </head>
 <body>
+
     <div class="account-container">
         <h1>Akun Saya</h1>
         <h2>Profil & Pengaturan Akun</h2>
@@ -59,14 +89,14 @@
             // Hapus data session/token
             localStorage.removeItem('authToken');
             sessionStorage.removeItem('userData');
-            
-            // Redirect ke halaman login
-            window.location.href = "login.html";
-            
-            // Untuk simulasi, bisa menggunakan:
-            // alert("Anda telah logout. Mengarahkan ke halaman login...");
-            // setTimeout(() => { window.location.href = "login.html"; }, 1000);
+
+            // Tampilkan feedback
+            alert("Anda telah logout. Akan kembali ke halaman utama...");
+
+            // Redirect ke halaman landing (index.html)
+            window.location.href = "index.html";
         }
     </script>
+
 </body>
 </html>
