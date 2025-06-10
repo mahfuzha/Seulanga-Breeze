@@ -1,191 +1,277 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Seulanga Breeze Dashboard</title>
+  <meta charset="UTF-8">
+  <title>Seulanga Breeze</title>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
   <style>
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #d9f3ff;
+      background: #d5f1fc; /* Biru muda */
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: #0084d1;
+      padding: 15px;
+      color: #fff;
       text-align: center;
-    }
-
-    header {
-      background-color: #0288d1;
-      color: white;
-      padding: 20px 0;
-      font-size: 1.8rem;
+      font-size: 24px;
       font-weight: bold;
-    }
-
-    main {
-      margin-top: 40px;
+      width: 100%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
     .card {
-      background: white;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 25px;
+      margin: 40px 20px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
       width: 300px;
-      margin: auto;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
     }
 
-    .card h2 {
-      margin-bottom: 10px;
+    .card h3 {
+      color: #333;
+      font-size: 22px;
+      margin-bottom: 20px;
     }
 
-    .status-pompa {
+    .data {
+      font-size: 18px;
+      margin: 10px 0;
+      color: #333;
+    }
+
+    .pump-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .pump-button {
       width: 50px;
       height: 50px;
-      margin: 15px auto;
       border-radius: 50%;
-      background-color: #f44336;
-      box-shadow: 0 0 20px rgba(244, 67, 54, 0.5);
-      transition: background-color 0.3s;
+      border: none;
+      background-color: #e74c3c; /* Default Merah */
+      box-shadow: 0 0 12px rgba(231, 76, 60, 0.7);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .pump-on {
+      background-color: #2ecc71;
+      box-shadow: 0 0 12px rgba(46, 204, 113, 0.7);
+    }
+
+    .pump-off {
+      background-color: #e74c3c;
+      box-shadow: 0 0 12px rgba(231, 76, 60, 0.7);
+    }
+
+    .pump-label {
+      font-size: 16px;
+      color: #333;
+      margin-top: 8px;
+    }
+
+    .location-data {
+      font-size: 14px;
+      color: #555;
+      margin-top: 16px;
+    }
+
+    .location-icon {
+      font-size: 18px;
+      vertical-align: middle;
+      margin-right: 5px;
     }
 
     .menu {
       display: flex;
       justify-content: center;
-      margin-top: 40px;
-      gap: 10px;
+      gap: 15px;
+      margin-bottom: 30px;
     }
 
     .menu button {
-      background-color: #03a9f4;
-      color: white;
-      padding: 15px 25px;
-      border: none;
+      padding: 10px 20px;
       border-radius: 10px;
-      font-size: 1rem;
+      border: none;
+      background: #0084d1;
+      color: #fff;
+      font-size: 16px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background 0.3s ease;
     }
 
     .menu button:hover {
-      background-color: #0288d1;
+      background: #006bb3;
     }
 
-    p {
-      margin: 8px 0;
-      font-size: 1rem;
+    .notif {
+      border-radius: 8px;
+      padding: 10px 16px;
+      text-align: center;
+      margin: 16px auto;
+      font-size: 15px;
+      font-weight: 500;
+      width: 300px;
+      display: none;
     }
 
-    .emoji {
-      font-size: 1.3rem;
-      vertical-align: middle;
+    .notif.aktif {
+      background: #ff4b4b;
+      color: #fff;
+    }
+
+    .notif.normal {
+      background: #8ef5c1;
+      color: #000;
     }
   </style>
 </head>
 <body>
-  <header>
-    <span class="emoji">🌤️</span> Monitoring
-  </header>
 
-  <main>
-    <div class="card">
-      <h2><span class="emoji">📊</span> Data Terkini</h2>
-      <p><span class="emoji">🌡️</span> Suhu: <span id="suhu">Menunggu...</span> °C</p>
-      <p><span class="emoji">💧</span> Kelembapan: <span id="kelembapan">Menunggu...</span> %</p>
-      <div class="status-pompa" id="status-pompa"></div>
-      <p>Status Pompa: <span id="status-pompa-text">Menunggu...</span></p>
-      <p><span class="emoji">📍</span> Pineung, Syiah Kuala, Banda Aceh, Aceh, Sumatra, 23122, Indonesia</p>
-    </div>
-  </main>
+<div class="navbar">🌤️ Monitoring</div>
 
-  <div class="menu">
-    <button onclick="window.location.href='admin.html'"><span class="emoji">⚙️</span> Admin</button>
-    <button onclick="window.location.href='akun.html'"><span class="emoji">👤</span> Akun</button>
-    <button onclick="window.location.href='riwayat.html'"><span class="emoji">📊</span> Riwayat</button>
+<div id="notif" class="notif"></div>
+
+<div class="card">
+  <h3>📊 Data Terkini</h3>
+  <div class="data">🌡️ Suhu: <span id="suhu">--</span> °C</div>
+  <div class="data">💧 Kelembapan: <span id="kelembapan">--</span> %</div>
+  
+  <div class="pump-container">
+    <button id="pompa" class="pump-button pump-off"></button>
   </div>
+  <div class="pump-label">Status Pompa</div>
 
-  <!-- MQTT Client -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/mqttws31.min.js"></script>
-  <script>
-    const mqttHost = "test.mosquitto.org";
-    const mqttPort = 8884; // port WSS yang lebih stabil
-    const clientID = "webclient_" + Math.floor(Math.random() * 10000);
-    const client = new Paho.MQTT.Client(mqttHost, mqttPort, clientID);
+  <div class="location-data">
+    <span class="location-icon">📍</span>
+    <span id="location-text">Mengambil lokasi...</span>
+  </div>
+</div>
 
-    // Reconnect timer
-    let reconnectTimeout = 2000;
+<div class="menu">
+  <button onclick="window.location.href='admin.html'">Admin</button>
+  <button onclick="window.location.href='akun.html'">Akun</button>
+  <button onclick="window.location.href='riwayat.html'">Riwayat</button>
+</div>
 
-    function onConnect() {
-      console.log("Terhubung ke MQTT broker");
+<!-- JavaScript MQTT dan geolokasi -->
+<script>
+  const DEFAULT_LOCATION = "Jeulingke, Kecamatan Syiah Kuala, Banda Aceh";
+  const client = mqtt.connect('wss://test.mosquitto.org:8081');
 
-      // Pasang handler pesan setelah connect
-      client.onMessageArrived = onMessageArrived;
+  client.on('connect', function () {
+    console.log('Terkoneksi ke MQTT');
+    client.subscribe('tekkom/iot/data');
+    client.subscribe('tekkom/iot/pompa');
+    client.subscribe('tekkom/iot/location');
+    getLocation();
+  });
 
-      // Subscribe ke topik
-      client.subscribe("tekkom/iot/data", { qos: 0 });
-      client.subscribe("tekkom/iot/pompa", { qos: 0 });
-    }
+  client.on('message', function (topic, message) {
+    if (topic === 'tekkom/iot/data') {
+      const data = JSON.parse(message.toString());
+      document.getElementById('suhu').textContent = data.suhu;
+      document.getElementById('kelembapan').textContent = data.kelembapan;
 
-    function onFailure(err) {
-      console.error("Gagal koneksi:", err.errorMessage);
-      setTimeout(connectMQTT, reconnectTimeout);
-    }
-
-    function onConnectionLost(responseObject) {
-      if (responseObject.errorCode !== 0) {
-        console.log("Koneksi MQTT terputus: " + responseObject.errorMessage);
-        setTimeout(connectMQTT, reconnectTimeout);
+      const notif = document.getElementById('notif');
+      if (data.suhu > 35) {
+        notif.textContent = '🔥 Suhu Tinggi, Pompa Aktif!';
+        notif.className = 'notif aktif';
+        notif.style.display = 'block';
+      } else {
+        notif.textContent = '✅ Suhu Normal, Pompa Mati.';
+        notif.className = 'notif normal';
+        notif.style.display = 'block';
       }
     }
 
-    function onMessageArrived(message) {
-      console.log("Pesan dari MQTT:", message.destinationName, message.payloadString);
-
-      if (message.destinationName === "tekkom/iot/data") {
-        try {
-          const data = JSON.parse(message.payloadString);
-          console.log("Data suhu/kelembapan:", data);
-
-          if (data.suhu !== undefined && data.kelembapan !== undefined) {
-            document.getElementById("suhu").textContent = parseFloat(data.suhu).toFixed(1);
-            document.getElementById("kelembapan").textContent = parseFloat(data.kelembapan).toFixed(1);
-          } else {
-            console.warn("Format data tidak sesuai:", data);
-          }
-        } catch (err) {
-          console.error("Error parsing data:", err);
-        }
-      }
-
-      if (message.destinationName === "tekkom/iot/pompa") {
-        const status = message.payloadString.trim();
-        const statusElem = document.getElementById("status-pompa");
-        const statusText = document.getElementById("status-pompa-text");
-
-        if (status === "HIDUP") {
-          statusElem.style.backgroundColor = "#4caf50";
-          statusElem.style.boxShadow = "0 0 20px rgba(76,175,80,0.5)";
-          statusText.textContent = "HIDUP";
-        } else if (status === "MATI") {
-          statusElem.style.backgroundColor = "#f44336";
-          statusElem.style.boxShadow = "0 0 20px rgba(244,67,54,0.5)";
-          statusText.textContent = "MATI";
-        } else {
-          console.warn("Status pompa tidak dikenal:", status);
-        }
+    if (topic === 'tekkom/iot/pompa') {
+      const pumpStatus = message.toString();
+      const pumpElement = document.getElementById('pompa');
+      if (pumpStatus === 'HIDUP') {
+        pumpElement.className = 'pump-button pump-on';
+      } else {
+        pumpElement.className = 'pump-button pump-off';
       }
     }
 
-    function connectMQTT() {
-      client.onConnectionLost = onConnectionLost;
+    if (topic === 'tekkom/iot/location') {
+      try {
+        const locationData = JSON.parse(message.toString());
+        updateLocationDisplay(locationData);
+      } catch (e) {
+        console.error("Gagal parsing data lokasi:", e);
+      }
+    }
+  });
 
-      client.connect({
-        onSuccess: onConnect,
-        onFailure: onFailure,
-        useSSL: true
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition, showError, {
+        enableHighAccuracy: true,
+        maximumAge: 60000,
+        timeout: 10000
       });
+    } else {
+      document.getElementById('location-text').textContent = DEFAULT_LOCATION;
     }
+  }
 
-    // Mulai koneksi MQTT saat halaman load
-    connectMQTT();
-  </script>
+  function showPosition(position) {
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+    const locationData = {
+      latitude: lat,
+      longitude: lng,
+      timestamp: new Date().toISOString()
+    };
+    client.publish('tekkom/iot/location', JSON.stringify(locationData));
+    updateLocationDisplay(locationData);
+  }
+
+  function updateLocationDisplay(locationData) {
+    const lat = locationData.latitude;
+    const lng = locationData.longitude;
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
+      .then(response => response.json())
+      .then(data => {
+        const locationName = data.display_name || `Koordinat: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        document.getElementById('location-text').textContent = locationName;
+      })
+      .catch(() => {
+        document.getElementById('location-text').textContent = `Koordinat: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+      });
+  }
+
+  function showError(error) {
+    const fallback = DEFAULT_LOCATION;
+    document.getElementById('location-text').textContent = fallback;
+  }
+
+  document.getElementById('pompa').addEventListener('click', function () {
+    const currentStatus = this.classList.contains('pump-on') ? 'MATI' : 'HIDUP';
+    client.publish('tekkom/iot/pompa', currentStatus);
+  });
+
+  setInterval(() => {
+    if (!client.connected) {
+      console.log("MQTT terputus, mencoba reconnect...");
+      client.reconnect();
+    }
+  }, 30000);
+</script>
+
 </body>
 </html>
