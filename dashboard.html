@@ -4,50 +4,55 @@
   <meta charset="UTF-8">
   <title>Seulanga Breeze</title>
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #d5f1fc;
+      background: #ccebff;
       margin: 0;
       padding: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
       min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
     }
 
     .navbar {
-      background: #0084d1;
+      background: #0077c2;
       padding: 15px;
       color: #fff;
       text-align: center;
       font-size: 24px;
       font-weight: bold;
-      width: 100%;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      z-index: 1;
+      position: relative;
     }
 
     .card {
       background: #ffffff;
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 25px;
-      margin: 40px 20px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-      width: 300px;
+      margin: 40px auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      width: 400px;
+      max-width: 90%;
       text-align: center;
+      z-index: 1;
+      position: relative;
     }
 
     .card h3 {
-      color: #333;
+      margin-top: 0;
+      color: #000000;
       font-size: 22px;
-      margin-bottom: 20px;
     }
 
     .data {
       font-size: 18px;
-      margin: 10px 0;
+      margin: 12px 0;
       color: #333;
+      text-align: left;
     }
 
     .pump-container {
@@ -57,86 +62,90 @@
     }
 
     .pump-button {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       border: none;
-      background-color: #e74c3c;
-      box-shadow: 0 0 12px rgba(231, 76, 60, 0.7);
-      transition: all 0.3s ease;
       cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
     }
 
     .pump-on {
       background-color: #2ecc71;
-      box-shadow: 0 0 12px rgba(46, 204, 113, 0.7);
+      box-shadow: 0 0 15px #2ecc71;
     }
 
     .pump-off {
       background-color: #e74c3c;
-      box-shadow: 0 0 12px rgba(231, 76, 60, 0.7);
+      box-shadow: 0 0 15px #e74c3c;
     }
 
     .pump-label {
+      text-align: center;
       font-size: 16px;
-      color: #333;
       margin-top: 8px;
+      color: #333;
     }
 
     .location-data {
+      text-align: center;
       font-size: 14px;
-      color: #555;
-      margin-top: 16px;
-      word-wrap: break-word;
+      margin-top: 20px;
+      color: #333;
     }
 
     .location-icon {
       font-size: 18px;
-      vertical-align: middle;
       margin-right: 5px;
+      vertical-align: middle;
     }
 
     .menu {
       display: flex;
       justify-content: center;
-      flex-wrap: wrap;
       gap: 15px;
-      margin-bottom: 30px;
+      flex-wrap: wrap;
+      margin: 20px auto;
+      max-width: 400px;
     }
 
     .menu button {
-      padding: 10px 20px;
-      border-radius: 10px;
+      flex: 1 1 100px;
+      padding: 12px;
+      border-radius: 8px;
       border: none;
-      background: #0084d1;
+      background: #0077c2;
       color: #fff;
-      font-size: 16px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      font-size: 16px;
+      transition: background 0.3s;
+      white-space: normal;
+      word-wrap: break-word;
     }
 
     .menu button:hover {
-      background: #006bb3;
+      background: #005b99;
     }
 
     .notif {
-      border-radius: 8px;
-      padding: 10px 16px;
+      border-radius: 10px;
+      padding: 12px;
       text-align: center;
-      margin: 16px auto;
-      font-size: 15px;
+      margin: 10px auto;
+      font-size: 16px;
       font-weight: 500;
-      width: 300px;
       display: none;
+      max-width: 400px;
     }
 
     .notif.aktif {
-      background: #ff4b4b;
+      background: #ff5252;
       color: #fff;
     }
 
     .notif.normal {
-      background: #8ef5c1;
+      background: #55efc4;
       color: #000;
     }
 
@@ -144,19 +153,21 @@
     @media (max-width: 768px) {
       .card {
         width: 90%;
-        margin: 20px 10px;
+        margin: 20px auto;
         padding: 20px;
       }
 
       .menu {
         flex-direction: column;
         align-items: center;
+        width: 100%;
+        gap: 10px;
       }
 
       .menu button {
-        width: 80%;
-        font-size: 15px;
-        padding: 12px;
+        width: 90%;
+        font-size: 16px;
+        padding: 14px;
       }
 
       .navbar {
@@ -179,8 +190,8 @@
       }
 
       .pump-button {
-        width: 45px;
-        height: 45px;
+        width: 50px;
+        height: 50px;
       }
 
       .pump-label {
@@ -190,21 +201,25 @@
       .location-data {
         font-size: 12px;
       }
-    }
 
+      .menu button {
+        width: 95%;
+        font-size: 15px;
+      }
+    }
   </style>
 </head>
+
 <body>
 
 <div class="navbar">🌤️ Monitoring</div>
-
 <div id="notif" class="notif"></div>
 
 <div class="card">
   <h3>📊 Data Terkini</h3>
   <div class="data">🌡️ Suhu: <span id="suhu">--</span> °C</div>
   <div class="data">💧 Kelembapan: <span id="kelembapan">--</span> %</div>
-  
+
   <div class="pump-container">
     <button id="pompa" class="pump-button pump-off"></button>
   </div>
@@ -222,7 +237,7 @@
   <button onclick="window.location.href='riwayat.html'">Riwayat</button>
 </div>
 
-<!-- JavaScript MQTT dan geolokasi -->
+<!-- Script MQTT tetap -->
 <script>
   const DEFAULT_LOCATION = "Jeulingke, Kecamatan Syiah Kuala, Banda Aceh";
   const client = mqtt.connect('wss://test.mosquitto.org:8081');
@@ -242,7 +257,7 @@
       document.getElementById('kelembapan').textContent = data.kelembapan;
 
       const notif = document.getElementById('notif');
-      if (data.suhu > 35) {
+      if (data.suhu > 30) {
         notif.textContent = '🔥 Suhu Tinggi, Pompa Aktif!';
         notif.className = 'notif aktif';
         notif.style.display = 'block';
