@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <title>Seulanga Breeze</title>
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #d5f1fc; /* Biru muda */
+      background: #d5f1fc;
       margin: 0;
       padding: 0;
       display: flex;
@@ -60,7 +61,7 @@
       height: 50px;
       border-radius: 50%;
       border: none;
-      background-color: #e74c3c; /* Default Merah */
+      background-color: #e74c3c;
       box-shadow: 0 0 12px rgba(231, 76, 60, 0.7);
       transition: all 0.3s ease;
       cursor: pointer;
@@ -86,6 +87,7 @@
       font-size: 14px;
       color: #555;
       margin-top: 16px;
+      word-wrap: break-word;
     }
 
     .location-icon {
@@ -97,6 +99,7 @@
     .menu {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 15px;
       margin-bottom: 30px;
     }
@@ -136,6 +139,59 @@
       background: #8ef5c1;
       color: #000;
     }
+
+    /* RESPONSIVE SETTINGS */
+    @media (max-width: 768px) {
+      .card {
+        width: 90%;
+        margin: 20px 10px;
+        padding: 20px;
+      }
+
+      .menu {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .menu button {
+        width: 80%;
+        font-size: 15px;
+        padding: 12px;
+      }
+
+      .navbar {
+        font-size: 20px;
+        padding: 12px;
+      }
+
+      .notif {
+        width: 90%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card h3 {
+        font-size: 20px;
+      }
+
+      .data {
+        font-size: 16px;
+      }
+
+      .pump-button {
+        width: 45px;
+        height: 45px;
+      }
+
+      .pump-label {
+        font-size: 14px;
+      }
+
+      .location-data {
+        font-size: 12px;
+      }
+    }
+
   </style>
 </head>
 <body>
