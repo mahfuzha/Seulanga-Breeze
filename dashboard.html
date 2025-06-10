@@ -261,7 +261,7 @@
       document.getElementById('kelembapan').textContent = data.kelembapan;
 
       const notif = document.getElementById('notif');
-      if (data.suhu > 35) {
+      if (data.suhu > 30) {
         notif.textContent = '🔥 Suhu Tinggi, Pompa Aktif!';
         notif.className = 'notif aktif';
         notif.style.display = 'block';
