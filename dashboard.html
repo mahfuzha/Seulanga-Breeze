@@ -106,27 +106,47 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/mqttws31.min.js"></script>
   <script>
     const mqttHost = "test.mosquitto.org";
-    const mqttPort = 8081;
+    const mqttPort = 8884; // port WSS yang lebih stabil
     const clientID = "webclient_" + Math.floor(Math.random() * 10000);
     const client = new Paho.MQTT.Client(mqttHost, mqttPort, clientID);
 
     // Reconnect timer
     let reconnectTimeout = 2000;
 
-    client.onConnectionLost = function(responseObject) {
-      console.log("Koneksi MQTT terputus: " + responseObject.errorMessage);
-      setTimeout(connectMQTT, reconnectTimeout);
-    };
+    function onConnect() {
+      console.log("Terhubung ke MQTT broker");
 
-    client.onMessageArrived = function(message) {
+      // Pasang handler pesan setelah connect
+      client.onMessageArrived = onMessageArrived;
+
+      // Subscribe ke topik
+      client.subscribe("tekkom/iot/data", { qos: 0 });
+      client.subscribe("tekkom/iot/pompa", { qos: 0 });
+    }
+
+    function onFailure(err) {
+      console.error("Gagal koneksi:", err.errorMessage);
+      setTimeout(connectMQTT, reconnectTimeout);
+    }
+
+    function onConnectionLost(responseObject) {
+      if (responseObject.errorCode !== 0) {
+        console.log("Koneksi MQTT terputus: " + responseObject.errorMessage);
+        setTimeout(connectMQTT, reconnectTimeout);
+      }
+    }
+
+    function onMessageArrived(message) {
       console.log("Pesan dari MQTT:", message.destinationName, message.payloadString);
 
       if (message.destinationName === "tekkom/iot/data") {
         try {
           const data = JSON.parse(message.payloadString);
+          console.log("Data suhu/kelembapan:", data);
+
           if (data.suhu !== undefined && data.kelembapan !== undefined) {
-            document.getElementById("suhu").textContent = data.suhu.toFixed(1);
-            document.getElementById("kelembapan").textContent = data.kelembapan.toFixed(1);
+            document.getElementById("suhu").textContent = parseFloat(data.suhu).toFixed(1);
+            document.getElementById("kelembapan").textContent = parseFloat(data.kelembapan).toFixed(1);
           } else {
             console.warn("Format data tidak sesuai:", data);
           }
@@ -152,19 +172,14 @@
           console.warn("Status pompa tidak dikenal:", status);
         }
       }
-    };
+    }
 
     function connectMQTT() {
+      client.onConnectionLost = onConnectionLost;
+
       client.connect({
-        onSuccess: function() {
-          console.log("Terhubung ke MQTT broker");
-          client.subscribe("tekkom/iot/data");
-          client.subscribe("tekkom/iot/pompa");
-        },
-        onFailure: function(err) {
-          console.error("Gagal koneksi:", err.errorMessage);
-          setTimeout(connectMQTT, reconnectTimeout);
-        },
+        onSuccess: onConnect,
+        onFailure: onFailure,
         useSSL: true
       });
     }
